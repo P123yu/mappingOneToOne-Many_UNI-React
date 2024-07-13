@@ -1,0 +1,64 @@
+
+// One To One Unidirectional Mapping                          user has fk of address table id (pk)
+
+{
+    "userId": 2,
+    "userName": "mona",
+    "age": 10,
+    "addressModel": {
+        "addressId": 2,
+        "district": "mumbai"
+    }
+}
+
+
+
+// One To One Mapping in React   -------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+import axios from "axios";
+import React, { useState } from "react";
+
+const Modal = () => {
+  const [user, setUser] = useState({userName: "",age: ""});
+  const [address, setAddress] = useState({ district: ""});
+
+  const handleUserChange = (e) => {
+    const { name, value } = e.target;
+    setUser({...user,[name]: value})};
+
+  const handleAddressChange = (e) => {
+    const { name, value } = e.target;
+    setAddress({...address,[name]: value})};
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const formData = {...user,addressModel: { ...address }};
+    axios
+      .post("http://localhost:8080/api/user/post", formData)
+      .then((res) => console.log(res));
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <div>
+        <label>
+          Name: <input type="text" name="userName" value={user.userName} onChange={handleUserChange}/>
+        </label>
+      </div>
+      <div>
+        <label>
+          Age: <input type="number" name="age" value={user.age} onChange={handleUserChange}/>
+        </label>
+      </div>
+      <div>
+        <label>
+          District: <input type="text" name="district" value={address.district} onChange={handleAddressChange} />
+        </label>
+      </div>
+      <button type="submit">Submit</button>
+    </form>
+  );
+};
+
+export default Modal;
