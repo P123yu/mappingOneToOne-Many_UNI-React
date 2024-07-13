@@ -1,0 +1,137 @@
+
+// json 
+
+[
+    {
+        "userId": 4,
+        "userName": "mm",
+        "age": 16,
+        "address": [
+            {
+                "addressId": 10,
+                "district": "d"
+            },
+            {
+                "addressId": 8,
+                "district": "a"
+            },
+            {
+                "addressId": 9,
+                "district": "b"
+            },
+            {
+                "addressId": 11,
+                "district": "e"
+            },
+            {
+                "addressId": 12,
+                "district": "c"
+            }
+        ]
+    }
+]
+
+
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+import axios from "axios";
+import React, { useState } from "react";
+
+const SurveyModal = () => {
+  const [user, setUser] = useState({
+    userName: "",
+    age: "",
+  });
+
+  const [addresses, setAddresses] = useState([
+    {
+      district: "",
+    },
+  ]);
+
+  const handleUserChange = (e) => {
+    const { name, value } = e.target;
+    setUser({
+      ...user,
+      [name]: value,
+    });
+  };
+
+  const handleAddressChange = (index, e) => {
+    const { name, value } = e.target;
+    const updatedAddresses = addresses.map((address, i) =>
+      i === index ? { ...address, [name]: value } : address
+    );
+    setAddresses(updatedAddresses);
+  };
+
+  const addAddress = () => {
+    setAddresses([...addresses, { district: "" }]);
+  };
+
+  const removeAddress = (index) => {
+    setAddresses(addresses.filter((_, i) => i !== index));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const formData = {
+      ...user,
+      address: addresses,
+    };
+    console.log(formData);
+    axios
+      .post("http://localhost:8080/api/user/post", formData)
+      .then((res) => console.log(res));
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <div>
+        <label>
+          Name:
+          <input
+            type="text"
+            name="userName"
+            value={user.userName}
+            onChange={handleUserChange}
+          />
+        </label>
+      </div>
+      <div>
+        <label>
+          Age:
+          <input
+            type="number"
+            name="age"
+            value={user.age}
+            onChange={handleUserChange}
+          />
+        </label>
+      </div>
+      {addresses.map((address, index) => (
+        <div key={index}>
+          <label>
+            District:
+            <input
+              type="text"
+              name="district"
+              value={address.district}
+              onChange={(e) => handleAddressChange(index, e)}
+            />
+          </label>
+          <button type="button" onClick={() => removeAddress(index)}>
+            Remove Address
+          </button>
+        </div>
+      ))}
+      <button type="button" onClick={addAddress}>
+        Add Address
+      </button>
+      <button type="submit">Submit</button>
+    </form>
+  );
+};
+
+export default SurveyModal;
