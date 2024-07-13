@@ -3,6 +3,9 @@ package com.example.mappingOneToOne.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "users")
 @Getter
@@ -16,7 +19,7 @@ public class UserModel {
     private String userName;
     private Integer age;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "fk_address_id", referencedColumnName = "addressId")
-    private AddressModel addressModel;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id_fk", referencedColumnName = "userId")
+    private Set<AddressModel> address = new HashSet<>();
 }
